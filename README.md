@@ -53,14 +53,16 @@ https://github.com/aryan-9907/wallo-expense-tracker/releases/latest
 
 ## 📸 Screenshots
 
+## 📸 Screenshots
+
 <table>
   <tr>
-    <td><img src="screenshots/screenshot1.jpeg" width="100%"/></td>
-    <td><img src="screenshots/screenshot2.jpeg" width="100%"/></td>
+    <td><img src="screenshots/screenshot1.jpeg" width="60%"/></td>
+    <td><img src="screenshots/screenshot2.jpeg" width="60%"/></td>
   </tr>
   <tr>
-    <td><img src="screenshots/screenshot3.jpeg" width="100%"/></td>
-    <td><img src="screenshots/screenshot4.jpeg" width="100%"/></td>
+    <td><img src="screenshots/screenshot5.jpeg" width="60%"/></td>
+    <td><img src="screenshots/screenshot4.jpeg" width="60%"/></td>
   </tr>
 </table>
 
