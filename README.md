@@ -41,7 +41,8 @@ This project was built using **HTML, CSS, and JavaScript**, with development acc
 
 ## 🚀 Live Demo
 
-Coming Soon...
+**🌐 Web App**
+https://aryan-9907.github.io/wallo-expense-tracker/
 
 ---
 
