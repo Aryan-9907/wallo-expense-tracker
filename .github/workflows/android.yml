@@ -20,13 +20,16 @@ jobs:
         with:
           node-version: 22
 
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
 
-      - run: |
+      - name: Restore signing keystore
+        run: |
           mkdir -p android
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/wallo-release.jks
 
-      - run: |
+      - name: Create key.properties
+        run: |
           cat > android/key.properties <<EOF
           storeFile=wallo-release.jks
           storePassword=${{ secrets.KEYSTORE_PASSWORD }}
@@ -34,24 +37,35 @@ jobs:
           keyPassword=${{ secrets.KEY_PASSWORD }}
           EOF
 
-      - run: npx cap sync android
+      - name: Sync Capacitor
+        run: npx cap sync android
 
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
 
-      - run: chmod +x android/gradlew
+      - name: Make Gradle executable
+        run: chmod +x android/gradlew
 
-      - working-directory: android
+      - name: Build Release APK
+        working-directory: android
         run: ./gradlew assembleRelease
 
-      - name: Rename APK
+      - name: Find generated APK
         run: |
-          mkdir release
-          cp android/app/build/outputs/apk/release/app-release.apk release/Wallo-${GITHUB_REF_NAME}.apk
+          echo "Searching for APK..."
+          find android -type f -name "*.apk"
 
-      - uses: softprops/action-gh-release@v2
+      - name: Prepare Release APK
+        run: |
+          mkdir -p release
+          APK=$(find android -type f -name "*.apk" | head -n 1)
+          echo "Using APK: $APK"
+          cp "$APK" "release/Wallo-${GITHUB_REF_NAME}.apk"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: release/Wallo-${{ github.ref_name }}.apk
