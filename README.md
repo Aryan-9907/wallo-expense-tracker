@@ -60,6 +60,7 @@ https://github.com/aryan-9907/wallo-expense-tracker/releases/latest
     <td><img src="screenshots/screenshot5.jpeg" width="100%"/></td>
   </tr>
 </table>
+
 ---
 
 ## 🛠️ Technologies Used
