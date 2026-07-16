@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wallo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Expense tracker</p>
+          <h1>Wallo</h1>
+        </div>
+        <button id="themeToggle" class="icon-button" aria-label="Toggle theme">
+          <span>☀️</span>
+        </button>
+      </header>
+
+      <main>
+        <section id="homeView" class="view active">
+          <section class="hero-card">
+            <div class="hero-copy">
+              <p class="eyebrow">Current balance</p>
+              <h2 id="balanceAmount">₹0.00</h2>
+              <p class="muted">Your finances, beautifully organized.</p>
+            </div>
+          </section>
+
+          <section class="summary-grid">
+            <article class="summary-card income">
+              <p>Total Earnings</p>
+              <strong id="incomeAmount">₹0.00</strong>
+            </article>
+            <article class="summary-card expense">
+              <p>Total Expenses</p>
+              <strong id="expenseAmount">₹0.00</strong>
+            </article>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h3>Add Expense</h3>
+              <button id="openFormButton" class="text-button">Quick add</button>
+            </div>
+            <form id="expenseForm" class="transaction-form">
+              <label>
+                <span>Title</span>
+                <input id="titleInput" type="text" placeholder="e.g. Groceries" required />
+              </label>
+              <label>
+                <span>Amount</span>
+                <input id="amountInput" type="number" min="0.01" step="0.01" placeholder="0.00" required />
+              </label>
+              <label>
+                <span>Category</span>
+                <select id="categorySelect" required>
+                  <option value="">Choose category</option>
+                  <option>Food 🍔</option>
+                  <option>Shopping 🛍️</option>
+                  <option>Transport 🚗</option>
+                  <option>Bills 💡</option>
+                  <option>Entertainment 🎮</option>
+                  <option>Health 🩺</option>
+                  <option>Education 📚</option>
+                  <option>Salary 💼</option>
+                  <option>Other 📌</option>
+                </select>
+              </label>
+              <button class="primary-button" type="submit">Add Expense</button>
+            </form>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h3>Recent Transactions</h3>
+            </div>
+            <div id="transactionsList" class="transaction-list"></div>
+          </section>
+        </section>
+
+        <section id="earningsView" class="view">
+          <section class="card">
+            <div class="card-header">
+              <h3>Add Earnings</h3>
+            </div>
+            <form id="earningsForm" class="transaction-form">
+              <label>
+                <span>Title</span>
+                <input id="earningTitleInput" type="text" placeholder="e.g. Freelance Project" required />
+              </label>
+              <label>
+                <span>Amount</span>
+                <input id="earningAmountInput" type="number" min="0.01" step="0.01" placeholder="0.00" required />
+              </label>
+              <button class="primary-button success-button" type="submit">Add Earnings</button>
+            </form>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h3>Recent Earnings</h3>
+            </div>
+            <div id="earningsList" class="transaction-list"></div>
+          </section>
+        </section>
+
+        <section id="periodView" class="view">
+          <section class="card">
+            <div class="card-header">
+              <h3>Time Period</h3>
+            </div>
+            <div class="period-filter-group">
+              <button type="button" class="period-chip active" data-period="today">Today</button>
+              <button type="button" class="period-chip" data-period="week">This Week</button>
+              <button type="button" class="period-chip" data-period="month">This Month</button>
+            </div>
+            <div class="period-search-row">
+              <input id="periodSearchInput" type="text" placeholder="Search title or category" />
+              <select id="periodTypeFilter">
+                <option value="all">All</option>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+            <button id="toggleRangeBtn" class="secondary-button range-toggle">Choose custom range</button>
+            <div id="customRangePanel" class="custom-range hidden">
+              <label>
+                <span>From</span>
+                <input id="startDateInput" type="date" />
+              </label>
+              <label>
+                <span>To</span>
+                <input id="endDateInput" type="date" />
+              </label>
+              <button id="applyRangeBtn" class="primary-button">Show Range</button>
+            </div>
+            <div class="period-summary">
+              <article class="summary-card income small">
+                <p>Income</p>
+                <strong id="periodIncome">₹0.00</strong>
+              </article>
+              <article class="summary-card expense small">
+                <p>Expenses</p>
+                <strong id="periodExpense">₹0.00</strong>
+              </article>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h3 id="periodTitle">Transactions</h3>
+            </div>
+            <div id="periodTransactionsList" class="transaction-list"></div>
+          </section>
+        </section>
+
+        <section id="statsView" class="view">
+          <section class="card insights-card">
+            <div class="card-header">
+              <h3>Smart Insights</h3>
+            </div>
+            <div id="insightBadge" class="insight-badge">Live snapshot</div>
+            <div id="insightMessage" class="insight-message">Loading insight...</div>
+            <div id="insightHint" class="insight-hint">Your money story updates here.</div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h3>Spending by Category</h3>
+            </div>
+            <canvas id="categoryChart"></canvas>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h3>Monthly Earnings, Expenses & Savings</h3>
+            </div>
+            <canvas id="monthlyChart"></canvas>
+          </section>
+        </section>
+
+        <section id="settingsView" class="view">
+          <section class="card">
+            <div class="card-header">
+              <h3>Theme</h3>
+            </div>
+            <div class="theme-panel">
+              <div class="theme-section">
+                <div class="section-title-row">
+                  <span class="section-icon">🌓</span>
+                  <h4>Theme mode</h4>
+                </div>
+                <div class="theme-switcher" role="group" aria-label="Theme picker">
+                  <button type="button" class="theme-option active" data-theme="light">☀️ Light</button>
+                  <button type="button" class="theme-option" data-theme="dark">🌙 Dark</button>
+                </div>
+              </div>
+
+              <div id="paletteSection" class="theme-section">
+                <div class="section-title-row">
+                  <span class="section-icon">🎨</span>
+                  <h4>Palette</h4>
+                </div>
+                <div class="theme-palette">
+                  <button type="button" class="palette-option active" data-palette="classic" aria-label="Classic theme">
+                    <span class="palette-swatch-group">
+                      <span class="palette-swatch classic swatch-1"></span>
+                      <span class="palette-swatch classic swatch-2"></span>
+                      <span class="palette-swatch classic swatch-3"></span>
+                    </span>
+                    <span>Classic</span>
+                  </button>
+                  <button type="button" class="palette-option" data-palette="ocean" aria-label="Ocean theme">
+                    <span class="palette-swatch-group">
+                      <span class="palette-swatch ocean swatch-1"></span>
+                      <span class="palette-swatch ocean swatch-2"></span>
+                      <span class="palette-swatch ocean swatch-3"></span>
+                    </span>
+                    <span>Ocean</span>
+                  </button>
+                  <button type="button" class="palette-option" data-palette="sunset" aria-label="Sunset theme">
+                    <span class="palette-swatch-group">
+                      <span class="palette-swatch sunset swatch-1"></span>
+                      <span class="palette-swatch sunset swatch-2"></span>
+                      <span class="palette-swatch sunset swatch-3"></span>
+                    </span>
+                    <span>Sunset</span>
+                  </button>
+                  <button type="button" class="palette-option" data-palette="forest" aria-label="Forest theme">
+                    <span class="palette-swatch-group">
+                      <span class="palette-swatch forest swatch-1"></span>
+                      <span class="palette-swatch forest swatch-2"></span>
+                      <span class="palette-swatch forest swatch-3"></span>
+                    </span>
+                    <span>Forest</span>
+                  </button>
+                </div>
+              </div>
+
+              <div id="customThemeSection" class="theme-section">
+                <div class="section-title-row">
+                  <span class="section-icon">✏️</span>
+                  <h4>Custom</h4>
+                </div>
+                <button id="customThemeBtn" class="secondary-button custom-theme-btn" type="button" aria-expanded="false">
+                  <span>🎨</span>
+                  <span>Custom</span>
+                  <span class="chevron">▾</span>
+                </button>
+                <div id="customThemePanel" class="custom-theme-panel hidden">
+                  <div class="custom-theme-section">
+                    <div class="section-title-row compact">
+                      <span class="section-icon">✨</span>
+                      <h5>Accent colours</h5>
+                    </div>
+                    <div class="color-picker-grid">
+                      <label class="color-field">
+                        <span>Accent</span>
+                        <input id="accentColorInput" type="color" value="#3b82f6" />
+                      </label>
+                      <label class="color-field">
+                        <span>Income</span>
+                        <input id="incomeColorInput" type="color" value="#22c55e" />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="custom-theme-section">
+                    <div class="section-title-row compact">
+                      <span class="section-icon">🌈</span>
+                      <h5>Background</h5>
+                    </div>
+                    <div class="color-picker-grid">
+                      <label class="color-field">
+                        <span>Background</span>
+                        <input id="backgroundColorInput" type="color" value="#f5f7fa" />
+                      </label>
+                      <label class="color-field">
+                        <span>Surface</span>
+                        <input id="surfaceColorInput" type="color" value="#ffffff" />
+                      </label>
+                      <label class="color-field">
+                        <span>Text</span>
+                        <input id="textColorInput" type="color" value="#172033" />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="theme-section feedback-section">
+              <div class="section-title-row">
+                <span class="section-icon">🎉</span>
+                <h4>Feedback</h4>
+              </div>
+              <div class="settings-toggle-row single-toggle">
+                <div>
+                  <strong>Celebrations</strong>
+                  <p>Confetti and success sounds when money is added.</p>
+                </div>
+                <label class="switch" aria-label="Toggle celebrations">
+                  <input id="celebrationsToggle" type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h3>Data</h3>
+            </div>
+            <button id="exportBtn" class="secondary-button">Export CSV</button>
+            <button id="importBtn" class="secondary-button">Import CSV</button>
+            <input id="importFileInput" type="file" accept=".csv" hidden />
+            <div class="pdf-export-block">
+              <div class="card-header compact-card-header">
+                <h3>Export PDF</h3>
+              </div>
+              <div class="period-filter-group pdf-range-group">
+                <button type="button" class="period-chip active" data-pdf-period="today">Today</button>
+                <button type="button" class="period-chip" data-pdf-period="week">This Week</button>
+                <button type="button" class="period-chip" data-pdf-period="month">This Month</button>
+              </div>
+              <button id="togglePdfRangeBtn" class="secondary-button range-toggle" type="button">Choose custom range</button>
+              <div id="customPdfRangePanel" class="custom-range hidden">
+                <label>
+                  <span>From</span>
+                  <input id="pdfStartDateInput" type="date" />
+                </label>
+                <label>
+                  <span>To</span>
+                  <input id="pdfEndDateInput" type="date" />
+                </label>
+              </div>
+              <button id="exportPdfBtn" class="primary-button export-pdf-btn" type="button">Export PDF</button>
+            </div>
+            <button id="clearDataBtn" class="danger-button clear-data-btn" type="button">Clear All Data</button>
+          </section>
+        </section>
+      </main>
+
+      <a id="creditLink" class="credit-link" href="https://github.com/Aryan-9907" target="_blank" rel="noopener noreferrer">Made with ❤️ by ARYAN</a>
+
+      <div id="confirmModal" class="confirm-modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+        <div class="confirm-card">
+          <h3 id="confirmTitle">Clear all data?</h3>
+          <p>Are you sure you want to clear all data?</p>
+          <div class="confirm-actions">
+            <button id="cancelClearBtn" class="secondary-button" type="button">Cancel</button>
+            <button id="confirmClearBtn" class="danger-button confirm-action-btn" type="button">Yes</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="onboardingModal" class="confirm-modal hidden" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+        <div class="confirm-card onboarding-card">
+          <h3 id="onboardingTitle">Welcome to Wallo 👋</h3>
+          <p>Pick how you'd like it to look. You can always change this later in Settings.</p>
+          <div class="onboarding-theme-options">
+            <button id="onboardingLightBtn" class="theme-option" type="button">☀️ Light</button>
+            <button id="onboardingDarkBtn" class="theme-option" type="button">🌙 Dark</button>
+          </div>
+        </div>
+      </div>
+
+      <nav class="bottom-nav" aria-label="Bottom navigation">
+        <button class="nav-item active" data-view="homeView">
+          <span>🏠</span>
+          <small>Home</small>
+        </button>
+        <button class="nav-item" data-view="earningsView">
+          <span>💰</span>
+          <small>Earnings</small>
+        </button>
+        <button class="nav-item" data-view="periodView">
+          <span>🗓️</span>
+          <small>Period</small>
+        </button>
+        <button class="nav-item" data-view="statsView">
+          <span>📊</span>
+          <small>Insights</small>
+        </button>
+        <button class="nav-item" data-view="settingsView">
+          <span>⚙️</span>
+          <small>Settings</small>
+        </button>
+      </nav>
+
+      <button id="fab" class="fab" aria-label="Add transaction">+</button>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
