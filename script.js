@@ -321,7 +321,7 @@ function ensureAudioContext() {
   }
 }
 
-function playTone(frequency, duration, type = 'triangle', volume = 0.025) {
+function playTone(frequency, duration, type = 'triangle', volume = 0.099) {
   ensureAudioContext();
   if (!state.audioContext) return;
 
