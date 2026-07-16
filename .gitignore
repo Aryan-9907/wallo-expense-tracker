@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Capacitor
+android/.gradle/
+android/build/
+android/app/build/
+
+# macOS
+.DS_Store
+
+# Environment
+.env
+.env.local
+
+# VS Code
+.vscode/
