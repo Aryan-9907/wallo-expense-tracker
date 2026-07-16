@@ -364,9 +364,9 @@ function handleButtonSound(event) {
   }
 
   if (button.id === 'themeToggle' || button.classList.contains('nav-item')) {
-    playTone(420, 0.06, 'square', 0.100);
+    playTone(420, 0.06, 'square', 0.088);
   } else {
-    playTone(320, 0.05, 'triangle', 0.098);
+    playTone(320, 0.05, 'triangle', 0.088);
   }
 }
 
