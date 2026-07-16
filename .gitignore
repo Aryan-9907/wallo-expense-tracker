@@ -15,3 +15,7 @@ android/app/build/
 
 # VS Code
 .vscode/
+# Android signing
+wallo-release.jks
+wallo-release.base64
+android/key.properties
